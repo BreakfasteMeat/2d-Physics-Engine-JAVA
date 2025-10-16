@@ -1,3 +1,5 @@
+package physics2D.vector2d;
+
 public class Vector{
     protected double x;
     protected double y;
@@ -29,7 +31,7 @@ public class Vector{
     }
     public Vector scaleDivide(double scale) {
         if (scale == 0){
-            throw new ArithmeticException("Cannot divide Vector with 0.");
+            throw new ArithmeticException("Cannot divide physics2D.vector2d.Vector with 0.");
         }
         return new Vector(x / scale, y / scale);
     }
@@ -49,21 +51,5 @@ public class Vector{
         return "(" + x + ", " + y + ")";
     }
 
-    public static class VectorMath{
-        public static double length(Vector v1) {
 
-        }
-        public static double distance(Vector v1, Vector v2) {
-
-        }
-        public static double normalize(Vector v1) {
-
-        }
-        public static double dot(Vector v1, Vector v2) {
-
-        }
-        public static double cross(Vector v1, Vector v2) {
-
-        }
-    }
 }
