@@ -99,4 +99,20 @@ public abstract class FlatBody {
     public boolean isStatic() {
         return isStatic;
     }
+
+
+    public void move(Vector delta) {
+        if(delta == null){
+            throw new IllegalArgumentException("Delta is null");
+        }
+        position = position.add(delta);
+    }
+
+    public void moveTo(Vector newPosition) {
+        if(newPosition == null){
+            throw new IllegalArgumentException("New position is null");
+        }
+        position = newPosition;
+    }
+
 }

@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class FlatRandom {
     private final static Random random = new Random();
+
+
     public static FlatCircle randomCircle(Vector min, Vector max) {
         double randomX = min.x + (max.x - min.x) * random.nextDouble();
         double randomY = min.y + (max.y - min.y) * random.nextDouble();

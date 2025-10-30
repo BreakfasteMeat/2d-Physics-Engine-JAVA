@@ -22,4 +22,7 @@ public abstract class Shape2d {
 
     public abstract void accept(ShapeDrawer drawer, GraphicsContext gc);
 
+    public void setPosition(Vector position) {
+        this.position = position;
+    }
 }

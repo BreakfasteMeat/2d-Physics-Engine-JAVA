@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class World {
     Map<FlatBody, Shape2d> objectMap;
     Camera camera;
@@ -69,36 +70,4 @@ public class World {
         objectMap.put(body,shape2d);
     }
 
-//    public void addFilledCircle(Vector center, double radius) {
-//        Circle2d circle = new Circle2d(
-//                center,
-//                Color.BLACK,
-//                radius
-//        );
-//        objectList.add(circle);
-//    }
-//    public void addFilledBox(Vector top_left_position, double width, double height) {
-//        Box2d box = new Box2d(
-//                top_left_position,
-//                Color.BLACK,
-//                width,
-//                height
-//        );
-//        objectList.add(box);
-//    }
-//    public void addLine(Vector origin, Vector direction) {
-//        this.add(
-//                new Line2d(
-//                        origin,
-//                        direction,
-//                        Color.BLACK
-//                )
-//        );
-//    }
-//    public void addLine(double startX, double startY, double endX, double endY) {
-//        addLine(
-//                new Vector(startX,startY),
-//                new Vector(endX,endY)
-//        );
-//    }
 }

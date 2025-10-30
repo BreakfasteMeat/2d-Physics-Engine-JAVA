@@ -6,13 +6,11 @@ import javafx.scene.shape.Circle;
 import physics2D.flatPhysics2d.Vector;
 
 public class Circle2d extends Shape2d {
-    Circle circle;
     double radius;
 
     public Circle2d(Vector position, Color color, double radius) {
         super(position, color);
         this.radius = radius;
-        circle = new Circle(super.position.getX(), super.position.getY(), radius);
     }
 
     public Color getColor() {
@@ -28,9 +26,6 @@ public class Circle2d extends Shape2d {
         this.color = color;
     }
 
-    public Circle getCircle() {
-        return circle;
-    }
 
     public double getRadius() {
         return radius;
