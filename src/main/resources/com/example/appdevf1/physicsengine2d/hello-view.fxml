@@ -11,4 +11,5 @@
     </padding>
    <Canvas fx:id="mainCanvas" height="349.0" width="624.0" />
    <Button fx:id="debug_ran_circle" mnemonicParsing="false" text="Random Circle" />
+   <Button fx:id="debug_ran_box" mnemonicParsing="false" text="Random Box" />
 </VBox>

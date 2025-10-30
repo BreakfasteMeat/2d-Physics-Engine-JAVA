@@ -1,6 +1,6 @@
 package flat_graphics;
 
-import physics2D.vector2d.Vector;
+import physics2D.flatPhysics2d.Vector;
 
 public class Camera {
     private Vector position;

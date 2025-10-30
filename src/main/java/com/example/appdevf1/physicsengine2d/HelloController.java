@@ -1,45 +1,44 @@
 package com.example.appdevf1.physicsengine2d;
 
 import flat_graphics.World;
-import flat_graphics.graphics2d.shapes.Circle2d;
-import flat_graphics.graphics2d.shapes.Line2d;
 import javafx.animation.AnimationTimer;
-import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import physics2D.vector2d.Vector;
+import physics2D.flatPhysics2d.FlatRandom;
+import physics2D.flatPhysics2d.Vector;
 
 public class HelloController {
     public Canvas mainCanvas;
     public Button debug_ran_circle;
+    public Button debug_ran_box;
 
     World world;
+
+    Vector topLeft;
+    Vector bottomRight;
 
 
 
     public void initialize() {
+        topLeft = new  Vector(0,0);
+        bottomRight = new Vector(mainCanvas.getWidth(),mainCanvas.getHeight());
         world = new World(mainCanvas);
         debug_ran_circle.setOnMouseClicked(event -> {
-            System.out.println("Clicked!");
             world.add(
-                    new Circle2d(
-                            new Vector(Math.random() * mainCanvas.getWidth(),Math.random() * mainCanvas.getHeight()),
-                            Color.BLACK,
-                            Math.random() * 50 + 50
-
-                    )
-            );
+                    FlatRandom.randomCircle(
+                            topLeft.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)),
+                            bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2))
+            ));
         });
 
-        world.add(
-                new Line2d(
-                        new Vector(50,50),
-                        new Vector(30,100),
-                        Color.ALICEBLUE
-                )
-        );
+        debug_ran_box.setOnMouseClicked(event -> {
+            world.add(FlatRandom.randomBox(
+                    topLeft.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)),
+                    bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2))));
+        });
+
+
+
         new AnimationTimer() {
             @Override
             public void handle(long now) {

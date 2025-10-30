@@ -1,4 +1,4 @@
-package physics2D.vector2d;
+package physics2D.flatPhysics2d;
 
 public class Vector{
     protected double x;
@@ -31,7 +31,7 @@ public class Vector{
     }
     public Vector scaleDivide(double scale) {
         if (scale == 0){
-            throw new ArithmeticException("Cannot divide physics2D.vector2d.Vector with 0.");
+            throw new ArithmeticException("Cannot divide physics2D.flatPhysics2d.Vector with 0.");
         }
         return new Vector(x / scale, y / scale);
     }

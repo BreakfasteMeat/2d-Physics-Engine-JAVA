@@ -1,8 +1,9 @@
 package flat_graphics.graphics2d.shapes;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import physics2D.vector2d.Vector;
+import physics2D.flatPhysics2d.Vector;
 
 public class Circle2d extends Shape2d {
     Circle circle;
@@ -16,6 +17,11 @@ public class Circle2d extends Shape2d {
 
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public void accept(ShapeDrawer drawer, GraphicsContext gc) {
+        drawer.visit(this, gc);
     }
 
     public void setColor(Color color) {
