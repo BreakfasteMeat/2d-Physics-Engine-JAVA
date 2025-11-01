@@ -1,10 +1,93 @@
 package physics2D.flatPhysics2d;
 
 import javafx.util.Pair;
+import jdk.incubator.vector.VectorOperators;
 
 public class Collisions {
     public static Vector normal;
     public static double depth;
+
+    public static boolean PolygonCircleColliding(Vector circleCenter, double circleRadius, Vector[] vertices) {
+        normal = Vector.ZERO_VECTOR;
+        depth = Double.MAX_VALUE;
+
+        for(int i = 0; i < vertices.length; i++){
+            Vector va = vertices[i];
+            Vector vb = vertices[(i + 1) % vertices.length];
+
+            Vector edge = vb.subtract(va);
+            Vector axis = new Vector(-edge.getY(),edge.getX());
+
+
+            Pair<Double,Double> verticesAProjResult, verticesBProjResult;
+            verticesAProjResult = projectVertices(vertices, axis);
+            verticesBProjResult = projectCircle(circleCenter,circleRadius, axis);
+
+
+            if(verticesAProjResult.getKey() >= verticesBProjResult.getValue() || verticesBProjResult.getKey() >= verticesAProjResult.getValue()){
+                return false;
+            }
+
+            double axisDepth = Math.min(
+                    verticesAProjResult.getValue() - verticesBProjResult.getKey() , verticesBProjResult.getValue() - verticesAProjResult.getKey()
+            );
+            if(axisDepth < depth){
+                depth = axisDepth;
+                normal = axis;
+            }
+        }
+        int closestPointIndex = findClosestPointOnPolygon(circleCenter,vertices);
+        Vector closestPoint = vertices[closestPointIndex];
+
+        Vector axis = closestPoint.subtract(circleCenter);
+
+        Pair<Double,Double> verticesAProjResult, verticesBProjResult;
+        verticesAProjResult = projectVertices(vertices, axis);
+        verticesBProjResult = projectCircle(circleCenter,circleRadius, axis);
+
+
+        if(verticesAProjResult.getKey() >= verticesBProjResult.getValue() || verticesBProjResult.getKey() >= verticesAProjResult.getValue()){
+            return false;
+        }
+
+        double axisDepth = Math.min(
+                verticesAProjResult.getValue() - verticesBProjResult.getKey() , verticesBProjResult.getValue() - verticesAProjResult.getKey()
+        );
+        if(axisDepth < depth){
+            depth = axisDepth;
+            normal = axis;
+        }
+
+        depth /= FlatMath.length(normal);
+        normal = FlatMath.normalize(normal);
+
+        Vector polygonCenter = findArithmeticMean(vertices);
+
+        Vector direction = polygonCenter.subtract(circleCenter);
+
+        if(FlatMath.dot(direction, normal) < 0f){
+            normal = normal.scaleMultiply(-1);
+        }
+
+        return true;
+    }
+
+    private static int findClosestPointOnPolygon(Vector circleCenter, Vector[] vertices) {
+        int result = -1;
+        double minDistance = Double.MAX_VALUE;
+
+        for(int i = 0; i < vertices.length; i++){
+            Vector va = vertices[i];
+            double distance = FlatMath.distance(circleCenter, va);
+
+            if(distance < minDistance){
+                minDistance = distance;
+                result = i;
+            }
+        }
+
+        return result;
+    }
 
     public static boolean PolygonColliding(Vector[] verticesA, Vector[] verticesB) {
         normal = Vector.ZERO_VECTOR;
@@ -93,6 +176,25 @@ public class Collisions {
             double proj = FlatMath.dot(v, axis);
             if (proj < min) min = proj;
             if (proj > max) max = proj;
+        }
+
+        return new Pair<>(min, max);
+    }
+
+    private static Pair<Double, Double> projectCircle(Vector center, double radius, Vector axis){
+        Vector direction = FlatMath.normalize(axis);
+        Vector directionAndRadius = direction.scaleMultiply(radius);
+
+        Vector p1 = center.add(directionAndRadius);
+        Vector p2 = center.subtract(directionAndRadius);
+
+        double min = FlatMath.dot(p1, axis);
+        double max = FlatMath.dot(p2, axis);
+
+        if(min > max){
+            double t = min;
+            min = max;
+            max = t;
         }
 
         return new Pair<>(min, max);

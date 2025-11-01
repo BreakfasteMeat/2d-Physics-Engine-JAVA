@@ -23,6 +23,11 @@ public abstract class FlatBody {
         this.isStatic = isStatic;
     }
 
+    public void step(double elapsedTime){
+        position.add(velocity);
+        rotation += rotationalVelocity;
+    }
+
     public static FlatCircle CreateCircle(Vector position, double radius, double density, boolean isStatic, double restitution) {
         double area = radius * radius * Math.PI;
 

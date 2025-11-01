@@ -31,13 +31,13 @@ public class HelloController {
         topLeft = new  Vector(0,0);
         bottomRight = new Vector(mainCanvas.getWidth(),mainCanvas.getHeight());
         world = new FlatWorld(mainCanvas);
-//        debug_moveable_polygon = FlatRandom.randomCircle(
-//                topLeft.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)),
-//                bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2))
-//        );
-        debug_moveable_polygon = FlatRandom.randomBox(
+        debug_moveable_polygon = FlatRandom.randomCircle(
                 topLeft.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)),
-                bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)));
+                bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2))
+        );
+//        debug_moveable_polygon = FlatRandom.randomBox(
+//                topLeft.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)),
+//                bottomRight.subtract(new Vector(mainCanvas.getWidth()/2,mainCanvas.getHeight()/2)));
         world.add(debug_moveable_polygon);
 
         debug_ran_circle.setOnMouseClicked(event -> {
@@ -94,45 +94,20 @@ public class HelloController {
 
 
         List<FlatBody> bodies = world.getBodies();
-        for(FlatBody body : bodies) {
-            ((FlatBox)body).rotate(0.01);
-        }
-
-        for(int i = 0;i < bodies.size();i++) {
-            for(int j = i + 1;j < bodies.size();j++) {
-                FlatBody body1 = bodies.get(i);
-                FlatBody body2 = bodies.get(j);
-
-                if(body1 instanceof FlatCircle && body2 instanceof FlatCircle) {
-                    resolveCircleToCircleCollision((FlatCircle)body1, (FlatCircle)body2);
-                }
-                if(body1 instanceof FlatBox && body2 instanceof FlatBox) {
-                    resolveBoxToBoxCollision((FlatBox)body1, (FlatBox)body2);
-                }
-            }
-        }
-
     }
 
-    private void resolveBoxToBoxCollision(FlatBox box1, FlatBox box2){
+    private void resolveCircleToBoxCollision(FlatCircle circle, FlatBox box) {
         if(
-            Collisions.PolygonColliding(box1.getTransformedVertices(), box2.getTransformedVertices())
-        ){
-            box1.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
-            box2.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
-        }
-    }
-
-    private void resolveCircleToCircleCollision(FlatCircle circle1, FlatCircle circle2) {
-        if(
-                Collisions.CirclesColliding(
-                        circle1, circle2
+                Collisions.PolygonCircleColliding(
+                        circle.getPosition(),circle.getRadius(),box.getTransformedVertices()
                 )
-        ){
-            circle1.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
-            circle2.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
+        ) {
+            circle.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
+            box.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
         }
     }
+
+
     public void handleKeyPress(KeyEvent event){
         switch (event.getCode()){
             case W -> up = true;

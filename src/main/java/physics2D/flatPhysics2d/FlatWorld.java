@@ -19,6 +19,8 @@ public class FlatWorld {
     public static final double MAX_BODY_SIZE = 64f * 64f;
     public static final double MIN_DENSITY = 0.2f;
     public static final double MAX_DENSITY = 21.4f;
+    private Vector gravity;
+
 
     List<Color> colors = new ArrayList<>();
     List<FlatBody> bodies = new ArrayList<>();
@@ -45,6 +47,7 @@ public class FlatWorld {
         camera = new Camera(new Vector(0,0),5,canvas.getWidth() / canvas.getHeight());
         this.canvas = canvas;
         drawer = new ShapeDrawer();
+        this.gravity = new Vector(0,9.81);
     }
 
 
@@ -119,6 +122,72 @@ public class FlatWorld {
             throw new RuntimeException("Body is already in the world");
         }
         bodies.add(body);
+    }
+
+    public FlatBody getBody(int index){
+        return bodies.get(index);
+    }
+
+    public void Step(double elapsedTime){
+        //MOVEMENT STEP
+        for(FlatBody body : bodies) {
+            body.step(elapsedTime);
+        }
+
+
+        //COLLISION STEP
+        for(int i = 0;i < bodies.size();i++) {
+            for(int j = i + 1;j < bodies.size();j++) {
+                FlatBody body1 = bodies.get(i);
+                FlatBody body2 = bodies.get(j);
+
+
+
+                if(body1 instanceof FlatCircle && body2 instanceof FlatCircle) {
+                    resolveCircleToCircleCollision((FlatCircle)body1, (FlatCircle)body2);
+                }
+                if(body1 instanceof FlatBox && body2 instanceof FlatBox) {
+                    resolveBoxToBoxCollision((FlatBox)body1, (FlatBox)body2);
+                }
+                if(body1 instanceof FlatCircle && body2 instanceof FlatBox) {
+                    resolveCircleToBoxCollision((FlatCircle) body1, (FlatBox)body2);
+                }
+                if(body2 instanceof FlatCircle && body1 instanceof FlatBox) {
+                    resolveCircleToBoxCollision((FlatCircle) body2, (FlatBox)body1);
+                }
+
+            }
+        }
+    }
+    private void resolveCircleToBoxCollision(FlatCircle circle, FlatBox box) {
+        if(
+                Collisions.PolygonCircleColliding(
+                        circle.getPosition(),circle.getRadius(),box.getTransformedVertices()
+                )
+        ) {
+            circle.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
+            box.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
+        }
+    }
+
+    private void resolveBoxToBoxCollision(FlatBox box1, FlatBox box2){
+        if(
+                Collisions.PolygonColliding(box1.getTransformedVertices(), box2.getTransformedVertices())
+        ){
+            box1.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
+            box2.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
+        }
+    }
+
+    private void resolveCircleToCircleCollision(FlatCircle circle1, FlatCircle circle2) {
+        if(
+                Collisions.CirclesColliding(
+                        circle1, circle2
+                )
+        ){
+            circle1.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(1).scaleMultiply(-1));
+            circle2.move(Collisions.normal.scaleMultiply(Collisions.depth).scaleDivide(2));
+        }
     }
 
 
