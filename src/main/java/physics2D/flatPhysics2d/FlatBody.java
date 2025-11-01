@@ -1,15 +1,15 @@
 package physics2D.flatPhysics2d;
 
 public abstract class FlatBody {
-    private Vector position;
-    private Vector velocity;
-    private double rotation;
-    private double rotationalVelocity;
-    private double density;
-    private double mass;
-    private double restitution;
-    private double area;
-    private boolean isStatic;
+    protected Vector position;
+    protected Vector velocity;
+    protected double rotation;
+    protected double rotationalVelocity;
+    protected double density;
+    protected double mass;
+    protected double restitution;
+    protected double area;
+    protected boolean isStatic;
 
     public FlatBody(Vector position, Vector velocity, double rotation, double rotationalVelocity, double density, double mass, double restitution, double area, boolean isStatic) {
         this.position = position;

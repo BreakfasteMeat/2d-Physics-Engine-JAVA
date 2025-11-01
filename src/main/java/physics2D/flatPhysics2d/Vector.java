@@ -36,6 +36,16 @@ public class Vector{
         return new Vector(x / scale, y / scale);
     }
 
+    public static Vector transform(Vector v, FlatTransform transform) {
+        double rx = transform.cos * v.x - transform.sin * v.y;
+        double ry = transform.sin * v.x + transform.cos * v.y;
+
+        double tx = rx + transform.positionX;
+        double ty = ry + transform.positionY;
+
+        return new Vector(tx, ty);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Vector) {

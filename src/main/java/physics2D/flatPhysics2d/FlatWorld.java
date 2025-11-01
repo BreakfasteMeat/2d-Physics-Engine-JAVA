@@ -20,8 +20,8 @@ public class FlatWorld {
     public static final double MIN_DENSITY = 0.2f;
     public static final double MAX_DENSITY = 21.4f;
 
-    List<Color> colors = new ArrayList<Color>();
-    Map<FlatBody, Shape2d> objectMap;
+    List<Color> colors = new ArrayList<>();
+    List<FlatBody> bodies = new ArrayList<>();
     Camera camera;
     Canvas canvas;
     ShapeDrawer drawer;
@@ -31,8 +31,8 @@ public class FlatWorld {
         return colors.get(index);
     }
 
-    public Map<FlatBody, Shape2d> getObjectMap() {
-        return objectMap;
+    public List<FlatBody> getBodies() {
+        return bodies;
     }
 
     public FlatWorld(Canvas canvas) {
@@ -44,7 +44,6 @@ public class FlatWorld {
 
         camera = new Camera(new Vector(0,0),5,canvas.getWidth() / canvas.getHeight());
         this.canvas = canvas;
-        objectMap = new HashMap<>();
         drawer = new ShapeDrawer();
     }
 
@@ -61,37 +60,65 @@ public class FlatWorld {
         gc.scale(1,-1); // Flipping Y axis (positive value goes up)
         gc.clearRect(-canvasWidth/2, -canvasHeight/2, canvasWidth, canvasHeight);
 
-        for(Map.Entry<FlatBody, Shape2d> entry : objectMap.entrySet()) {
-            entry.getValue().setPosition(entry.getKey().getPosition());
-            entry.getValue().accept(drawer,gc);
-            System.out.println(((Circle2d)entry.getValue()).getRadius() + " , " + ((FlatCircle)entry.getKey()).getRadius());
+//        for(Map.Entry<FlatBody, Shape2d> entry : objectMap.entrySet()) {
+//            entry.getValue().setPosition(entry.getKey().getPosition());
+//            entry.getValue().accept(drawer,gc);
+//            System.out.println(((Circle2d)entry.getValue()).getRadius() + " , " + ((FlatCircle)entry.getKey()).getRadius());
+//        }
+        for(FlatBody body : bodies){
+            if(body instanceof FlatCircle circle) drawCircle(circle, gc);
+            else if (body instanceof FlatBox box) drawBox(box, gc);
+
         }
 
         gc.restore();
     }
 
+    private void drawCircle(FlatCircle circle, GraphicsContext gc) {
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+        gc.setFill(Color.GREEN);
+
+        double r = circle.getRadius();
+        double x = circle.getPosition().getX() - r;
+        double y = circle.getPosition().getY() - r;
+
+        gc.fillOval(x, y, r * 2, r * 2);
+        gc.strokeOval(x, y, r * 2, r * 2);
+    }
+    private void drawBox(FlatBox box, GraphicsContext gc) {
+        //TODO IMPLEMENT RENDERING OF BOX
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(2);
+        gc.setFill(Color.GREEN);
+
+        double[] xPoints = new double[4];
+        double[] yPoints = new double[4];
+
+        xPoints[0] = box.getTransformedVertices()[0].getX();
+        yPoints[0] = box.getTransformedVertices()[0].getY();
+
+        xPoints[1] = box.getTransformedVertices()[1].getX();
+        yPoints[1] = box.getTransformedVertices()[1].getY();
+
+        xPoints[2] = box.getTransformedVertices()[2].getX();
+        yPoints[2] = box.getTransformedVertices()[2].getY();
+
+        xPoints[3] = box.getTransformedVertices()[3].getX();
+        yPoints[3] = box.getTransformedVertices()[3].getY();
+
+
+
+        gc.fillPolygon(xPoints, yPoints, 4);
+        gc.strokePolygon(xPoints, yPoints, 4);
+
+    }
+
     public void add(FlatBody body) {
-        if(objectMap.containsKey(body)) {
-            return;
+        if(bodies.contains(body)) {
+            throw new RuntimeException("Body is already in the world");
         }
-        Shape2d shape2d;
-        if(body instanceof FlatBox box) {
-            shape2d = new Box2d(
-                    box.getPosition(),
-                    getRandomColor(),
-                    box.getWidth(),
-                    box.getHeight()
-            );
-        } else if(body instanceof FlatCircle circle){
-            shape2d = new Circle2d(
-                    circle.getPosition(),
-                    getRandomColor(),
-                    circle.getRadius()
-            );
-        } else {
-            throw new RuntimeException("Unsupported body type");
-        }
-        objectMap.put(body,shape2d);
+        bodies.add(body);
     }
 
 
